@@ -1,4 +1,4 @@
-// (c) Copyright 2019-2025 OLX
+// (c) Copyright 2019-2026 OLX
 use crate::bindings;
 use crate::error::Error;
 use crate::ops::*;
@@ -55,7 +55,7 @@ impl VipsImage {
     pub fn new_memory() -> Result<VipsImage> {
         unsafe {
             let res = bindings::vips_image_new_memory();
-            vips_image_result(res, Error::InitializationError("Could not generate object"))
+            vips_image_result(res, Error::InitializationError("VipsImage:new_memory - Could not generate object"))
         }
     }
 
@@ -65,7 +65,7 @@ impl VipsImage {
             let res = bindings::vips_image_new_from_file(f.as_ptr(), NULL);
             vips_image_result(
                 res,
-                Error::InitializationError("Could not initialise VipsImage from file"),
+                Error::InitializationError("VipsImage:new_from_file - Could not initialise VipsImage"),
             )
         }
     }
@@ -76,7 +76,7 @@ impl VipsImage {
             let res = bindings::vips_image_new_from_file_RW(f.as_ptr());
             vips_image_result(
                 res,
-                Error::InitializationError("Could not initialise VipsImage from file"),
+                Error::InitializationError("VipsImage:new_from_file_rw - Could not initialise VipsImage"),
             )
         }
     }
@@ -94,7 +94,7 @@ impl VipsImage {
                 bindings::vips_image_new_from_file_raw(f.as_ptr(), x_size, y_size, bands, offset);
             vips_image_result(
                 res,
-                Error::InitializationError("Could not initialise VipsImage from file"),
+                Error::InitializationError("VipsImage:new_from_file_raw - Could not initialise VipsImage"),
             )
         }
     }
@@ -114,7 +114,7 @@ impl VipsImage {
             );
             vips_image_result(
                 res,
-                Error::InitializationError("Could not initialise VipsImage from file"),
+                Error::InitializationError("VipsImage:new_from_file_access - Could not initialise VipsImage"),
             )
         }
     }
@@ -130,7 +130,7 @@ impl VipsImage {
             );
             vips_image_result(
                 res,
-                Error::InitializationError("Could not initialise VipsImage from file"),
+                Error::InitializationError("VipsImage:new_from_buffer - Could not initialise VipsImage"),
             )
         }
     }
@@ -154,7 +154,7 @@ impl VipsImage {
                 );
                 vips_image_result(
                     res,
-                    Error::InitializationError("Could not initialise VipsImage from memory"),
+                    Error::InitializationError("VipsImage:new_from_memory - Could not initialise VipsImage"),
                 )
             } else {
                 Err(Error::InitializationError(
@@ -169,7 +169,7 @@ impl VipsImage {
             let res = bindings::vips_image_new_matrix(width, height);
             vips_image_result(
                 res,
-                Error::InitializationError("Could not initialise VipsImage from file"),
+                Error::InitializationError("VipsImage:image_new_matrix - Could not initialise VipsImage"),
             )
         }
     }
@@ -188,7 +188,7 @@ impl VipsImage {
             );
             vips_image_result(
                 res,
-                Error::InitializationError("Could not initialise VipsImage from file"),
+                Error::InitializationError("VipsImage:image_new_matrix_from_array - Could not initialise VipsImage"),
             )
         }
     }
@@ -199,7 +199,7 @@ impl VipsImage {
                 bindings::vips_image_new_from_image(image.ctx, array.as_ptr(), array.len() as i32);
             vips_image_result(
                 res,
-                Error::InitializationError("Could not initialise VipsImage from Object"),
+                Error::InitializationError("VipsImage:new_from_image - Could not initialise VipsImage"),
             )
         }
     }
@@ -209,7 +209,7 @@ impl VipsImage {
             let res = bindings::vips_image_new_from_image1(image.ctx, c);
             vips_image_result(
                 res,
-                Error::InitializationError("Could not initialise VipsImage from Object"),
+                Error::InitializationError("VipsImage:new_from_image1 - Could not initialise VipsImage"),
             )
         }
     }
@@ -220,7 +220,7 @@ impl VipsImage {
             let res = bindings::vips_image_new_temp_file(format_c_str.as_ptr());
             vips_image_result(
                 res,
-                Error::InitializationError("Could not initialise VipsImage from format"),
+                Error::InitializationError("VipsImage:image_new_temp_file - Could not initialise VipsImage"),
             )
         }
     }
@@ -228,7 +228,7 @@ impl VipsImage {
     pub fn image_copy_memory(image: VipsImage) -> Result<VipsImage> {
         unsafe {
             let result = bindings::vips_image_copy_memory(image.ctx);
-            vips_image_result(result, Error::OperationError("Could not copy memory"))
+            vips_image_result(result, Error::OperationError("VipsImage:image_copy_memory - Could not copy memory"))
         }
     }
 
@@ -237,7 +237,7 @@ impl VipsImage {
             let result = bindings::vips_image_wio_input(self.ctx);
             utils::result(
                 result,
-                (),
+                || (),
                 Error::OperationError("Error on vips image_wio_input"),
             )
         }
@@ -299,7 +299,7 @@ impl VipsImage {
         unsafe {
             let res = bindings::vips_image_get_format(self.ctx);
             let format_enum = FromPrimitive::from_i32(res);
-            format_enum.ok_or_else(|| Error::IOError("Could get format from image"))
+            format_enum.ok_or_else(|| Error::IOError("VipsImage:get_coding - Could not get format from image"))
         }
     }
 
@@ -307,7 +307,7 @@ impl VipsImage {
         unsafe {
             let res = bindings::vips_image_get_format(self.ctx);
             let format_enum = FromPrimitive::from_i32(res);
-            format_enum.ok_or_else(|| Error::IOError("Could get format from image"))
+            format_enum.ok_or_else(|| Error::IOError("VipsImage:get_format - Could not get format"))
         }
     }
 
@@ -315,7 +315,7 @@ impl VipsImage {
         unsafe {
             let res = bindings::vips_image_guess_format(self.ctx);
             let format_enum = FromPrimitive::from_i32(res);
-            format_enum.ok_or_else(|| Error::IOError("Could get format from image"))
+            format_enum.ok_or_else(|| Error::IOError("VipsImage:guess_format - Could not guess format from image"))
         }
     }
 
@@ -327,7 +327,7 @@ impl VipsImage {
         unsafe {
             let res = bindings::vips_image_get_interpretation(self.ctx);
             let format_enum = FromPrimitive::from_i32(res);
-            format_enum.ok_or_else(|| Error::IOError("Could get format from image"))
+            format_enum.ok_or_else(|| Error::IOError("VipsImage:get_interpretation - Could not get interpretation from image"))
         }
     }
 
@@ -335,7 +335,7 @@ impl VipsImage {
         unsafe {
             let res = bindings::vips_image_guess_interpretation(self.ctx);
             let format_enum = FromPrimitive::from_i32(res);
-            format_enum.ok_or_else(|| Error::IOError("Could get format from image"))
+            format_enum.ok_or_else(|| Error::IOError("VipsImage:guess_interpretation - Could not guess interpretation from image"))
         }
     }
 
@@ -411,8 +411,8 @@ impl VipsImage {
             let res = bindings::vips_image_write(self.ctx, out);
             utils::result(
                 res,
-                VipsImage { ctx: out },
-                Error::IOError("Cannot write input to output"),
+                || VipsImage { ctx: out },
+                Error::IOError("VipsImage:image_write - Cannot write input to output"),
             )
         }
     }
@@ -420,21 +420,21 @@ impl VipsImage {
     pub fn image_pio_input(&mut self) -> Result<()> {
         unsafe {
             let res = bindings::vips_image_pio_input(self.ctx);
-            utils::result(res, (), Error::IOError("Cannot read image"))
+            utils::result(res, || (), Error::IOError("VipsImage:image_pio_input - Cannot read image"))
         }
     }
 
     pub fn image_pio_output(&mut self) -> Result<()> {
         unsafe {
             let res = bindings::vips_image_pio_output(self.ctx);
-            utils::result(res, (), Error::IOError("Cannot write image"))
+            utils::result(res, || (), Error::IOError("VipsImage:image_pio_output - Cannot write image"))
         }
     }
 
     pub fn image_inplace(&self) -> Result<()> {
         unsafe {
             let res = bindings::vips_image_inplace(self.ctx);
-            utils::result(res, (), Error::IOError("Cannot cannot be modified inplace"))
+            utils::result(res, || (), Error::IOError("VipsImage:image_inplace - Cannot be modified inplace"))
         }
     }
 
@@ -442,14 +442,14 @@ impl VipsImage {
         unsafe {
             let file_c_str = utils::new_c_string(filename)?;
             let res = bindings::vips_image_write_to_file(self.ctx, file_c_str.as_ptr(), NULL);
-            utils::result(res, (), Error::IOError("Cannot write to file"))
+            utils::result(res, || (), Error::IOError("VipsImage:image_write_to_file - Cannot write to file"))
         }
     }
 
     pub fn image_write_prepare(&self) -> Result<()> {
         unsafe {
             let res = bindings::vips_image_write_prepare(self.ctx);
-            utils::result(res, (), Error::IOError("Cannot prepare file to write"))
+            utils::result(res, || (), Error::IOError("VipsImage:image_write_prepare - Cannot prepare file to write"))
         }
     }
 
@@ -467,8 +467,8 @@ impl VipsImage {
             );
             utils::result(
                 res,
-                utils::new_byte_array(buffer_out, buffer_buf_size),
-                Error::IOError("Cannot write content to buffer"),
+                || utils::new_byte_array(buffer_out, buffer_buf_size),
+                Error::IOError("VipsImage:image_write_to_buffer - Cannot write content to buffer"),
             )
         }
     }
@@ -493,11 +493,11 @@ impl VipsImage {
             if format_enum.is_some() {
                 utils::result(
                     res,
-                    (out_bands, format_enum.unwrap()),
-                    Error::IOError("Could not predict image format"),
+                    || (out_bands, format_enum.unwrap()),
+                    Error::IOError("VipsImage:image_decode_predict - Could not predict image format enum"),
                 )
             } else {
-                Err(Error::IOError("Could not predict image format"))
+                Err(Error::IOError("VipsImage:image_decode_predict - Could not predict image format"))
             }
         }
     }
@@ -508,8 +508,8 @@ impl VipsImage {
             let res = bindings::vips_image_decode(self.ctx, &mut out);
             utils::result(
                 res,
-                VipsImage { ctx: out },
-                Error::IOError("Cannot decode image"),
+                || VipsImage { ctx: out },
+                Error::IOError("VipsImage:image_decode - Cannot decode image"),
             )
         }
     }
@@ -520,9 +520,30 @@ impl VipsImage {
             let res = bindings::vips_image_encode(self.ctx, &mut out, coding as i32);
             utils::result(
                 res,
-                VipsImage { ctx: out },
-                Error::IOError("Cannot encode image"),
+                || VipsImage { ctx: out },
+                Error::IOError("VipsConnection:image_encode - Cannot encode image"),
             )
+        }
+    }
+
+    pub fn get_as_string(&self, name: &str) -> Result<String> {
+        unsafe {
+            let name_c_str = utils::new_c_string(name)?;
+            let mut out: *mut c_char = std::ptr::null_mut();
+
+            let result = bindings::vips_image_get_as_string(self.ctx, name_c_str.as_ptr(), &mut out);
+
+            if result == -1 || out.is_null() {
+                return Err(Error::OperationError("VipsImage:get_as_string - Error on vips get_as_string or null pointer returned"));
+            }
+
+            let res_string = CStr::from_ptr(out)
+                .to_string_lossy()
+                .into_owned();
+
+            bindings::g_free(out as *mut _);
+
+            Ok(res_string)
         }
     }
 }
@@ -565,7 +586,7 @@ impl VipsSource {
             let res = bindings::vips_source_new_from_descriptor(descriptor);
             vips_source_result(
                 res,
-                Error::InitializationError("Could not initialise VipsSource from descriptor"),
+                Error::InitializationError("VipsSource:new_from_descriptor - Could not initialise VipsSource from descriptor"),
             )
         }
     }
@@ -576,7 +597,7 @@ impl VipsSource {
             let res = bindings::vips_source_new_from_file(f.as_ptr());
             vips_source_result(
                 res,
-                Error::InitializationError("Could not initialise VipsSource from file"),
+                Error::InitializationError("VipsSource:new_from_file - Could not initialise VipsSource from file"),
             )
         }
     }
@@ -588,7 +609,7 @@ impl VipsSource {
             let res = bindings::vips_source_new_from_blob(blob.ctx);
             vips_source_result(
                 res,
-                Error::InitializationError("Could not initialise VipsSource from blob"),
+                Error::InitializationError("VipsSource:new_from_blob - Could not initialise VipsSource from blob"),
             )
         }
     }
@@ -601,7 +622,7 @@ impl VipsSource {
             );
             vips_source_result(
                 res,
-                Error::InitializationError("Could not initialise VipsSource from memory"),
+                Error::InitializationError("VipsSource:new_from_memory - Could not initialise VipsSource from memory"),
             )
         }
     }
@@ -612,7 +633,7 @@ impl VipsSource {
             let res = bindings::vips_source_new_from_options(options.as_ptr());
             vips_source_result(
                 res,
-                Error::InitializationError("Could not initialise VipsSource from options"),
+                Error::InitializationError("VipsSource:new_from_options - Could not initialise VipsSource from options"),
             )
         }
     }
@@ -628,8 +649,8 @@ impl VipsSource {
             let result = bindings::vips_source_unminimise(self.ctx);
             utils::result(
                 result,
-                (),
-                Error::OperationError("Error on vips unminimise"),
+                || (),
+                Error::OperationError("VipsSource:unminimise - Error on vips unminimise"),
             )
         }
     }
@@ -639,8 +660,8 @@ impl VipsSource {
             let result = bindings::vips_source_decode(self.ctx);
             utils::result(
                 result,
-                (),
-                Error::OperationError("Error on vips decode"),
+                || (),
+                Error::OperationError("VipsSource:decode - Error on vips decode"),
             )
         }
     }
@@ -654,7 +675,7 @@ impl VipsSource {
                     Vec::from_raw_parts(bytes as *mut u8, result as usize, result as usize);
                 Ok(buffer)
             } else {
-                Err(Error::OperationError("Error on vips read"))
+                Err(Error::OperationError("VipsSource:read - Error on vips read"))
             }
         }
     }
@@ -667,7 +688,7 @@ impl VipsSource {
         unsafe {
             let result = bindings::vips_source_seek(self.ctx, offset, whence);
             if result == -1 {
-                Err(Error::OperationError("Error on vips seek"))
+                Err(Error::OperationError("VipsSource:is_mappable - Error on vips seek"))
             } else {
                 Ok(result)
             }
@@ -678,7 +699,7 @@ impl VipsSource {
         unsafe {
             let result = bindings::vips_source_rewind(self.ctx);
             if result == -1 {
-                Err(Error::OperationError("Error on vips rewind"))
+                Err(Error::OperationError("VipsSource:rewind - Error on vips rewind"))
             } else {
                 Ok(())
             }
@@ -689,7 +710,7 @@ impl VipsSource {
         unsafe {
             let result = bindings::vips_source_length(self.ctx);
             if result == -1 {
-                Err(Error::OperationError("Error on vips length"))
+                Err(Error::OperationError("VipsSource:length - Error on vips length"))
             } else {
                 Ok(result)
             }
@@ -703,11 +724,11 @@ impl<'a> VipsSource {
             let length: *mut u64 = null_mut();
             let result = bindings::vips_source_map(self.ctx, length);
             if length.is_null() {
-                Err(Error::OperationError("Error on vips map"))
+                Err(Error::OperationError("VipsSource:map - Error on vips map"))
             } else {
                 let size = (*length)
                     .try_into()
-                    .map_err(|_| Error::OperationError("Can't get size of array"))?;
+                    .map_err(|_| Error::OperationError("VipsSource:map - Can't get size of array"))?;
                 Ok(std::slice::from_raw_parts(result as *mut u8, size))
             }
         }
@@ -731,7 +752,7 @@ impl VipsTarget {
             let res = bindings::vips_target_new_to_descriptor(descriptor);
             vips_target_result(
                 res,
-                Error::InitializationError("Could not initialise VipsTarget from descriptor"),
+                Error::InitializationError("VipsTarget:new_to_descriptor - Could not initialise VipsTarget from descriptor"),
             )
         }
     }
@@ -742,7 +763,7 @@ impl VipsTarget {
             let res = bindings::vips_target_new_to_file(f.as_ptr());
             vips_target_result(
                 res,
-                Error::InitializationError("Could not initialise VipsTarget from file"),
+                Error::InitializationError("VipsTarget:new_to_file - Could not initialise VipsTarget from file"),
             )
         }
     }
@@ -752,7 +773,7 @@ impl VipsTarget {
             let res = bindings::vips_target_new_to_memory();
             vips_target_result(
                 res,
-                Error::InitializationError("Could not initialise VipsTarget from memory"),
+                Error::InitializationError("VipsTarget:new_to_memory - Could not initialise VipsTarget from memory"),
             )
         }
     }
@@ -765,7 +786,7 @@ impl VipsTarget {
                 buffer.len() as u64,
             );
             if res == -1 {
-                Err(Error::OperationError("Could not write to buffer"))
+                Err(Error::OperationError("VipsTarget:write - Could not write to buffer"))
             } else {
                 Ok(())
             }
@@ -782,7 +803,7 @@ impl VipsTarget {
         unsafe {
             let res = bindings::vips_target_putc(self.ctx, ch as i32);
             if res == -1 {
-                Err(Error::OperationError("Could not write to buffer"))
+                Err(Error::OperationError("VipsTarget:putc - Could not write to buffer"))
             } else {
                 Ok(())
             }
@@ -791,10 +812,10 @@ impl VipsTarget {
 
     pub fn writes(&mut self, text: &str) -> Result<()> {
         unsafe {
-            let cstr = CString::new(text).map_err(|_| Error::OperationError("Cannot initialize C string"))?;
+            let cstr = CString::new(text).map_err(|_| Error::OperationError("VipsTarget:writes - Cannot initialize C string"))?;
             let res = bindings::vips_target_writes(self.ctx, cstr.as_ptr());
             if res == -1 {
-                Err(Error::OperationError("Could not write to buffer"))
+                Err(Error::OperationError("VipsTarget:puts - Could not write to buffer"))
             } else {
                 Ok(())
             }
@@ -803,10 +824,10 @@ impl VipsTarget {
 
     pub fn write_amp(&mut self, text: &str) -> Result<()> {
         unsafe {
-            let cstr = CString::new(text).map_err(|_| Error::OperationError("Cannot initialize C string"))?;
+            let cstr = CString::new(text).map_err(|_| Error::OperationError("VipsTarget:write_amp - Cannot initialize C string"))?;
             let res = bindings::vips_target_write_amp(self.ctx, cstr.as_ptr());
             if res == -1 {
-                Err(Error::OperationError("Could not write to buffer"))
+                Err(Error::OperationError("VipsTarget:write_amp - Could not write to buffer"))
             } else {
                 Ok(())
             }
@@ -870,7 +891,7 @@ impl VipsInterpolate {
             let res = bindings::vips_interpolate_new(nickname.as_ptr());
             if res.is_null() {
                 Err(Error::InitializationError(
-                    "Cannot initialize interpolator with provided nickname",
+                    "VipsInterpolate:new_from_name - Cannot initialize interpolator with provided nickname",
                 ))
             } else {
                 Ok(VipsInterpolate { ctx: res })
